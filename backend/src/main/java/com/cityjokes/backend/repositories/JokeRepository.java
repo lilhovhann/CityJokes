@@ -14,4 +14,6 @@ public interface JokeRepository extends MongoRepository<Joke, String> {
 
     List<Joke> findBySetupContainingOrPunchlineContaining(String inputSetup, String inputPunchline);
     List<Joke> findAllByTypeAndSetupContainingOrPunchlineContaining(String type, String inputSetup, String inputPunchline);
+    
+   
 }

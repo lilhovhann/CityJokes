@@ -32,8 +32,7 @@ public class JokeService {
         return foundJokes;
     }
 
-    
-       public List<Joke> findByTypeAndKey(String type, String input) {
+    public List<Joke> findByTypeAndKey(String type, String input) {
         List<Joke> foundJokes = jokeRepo.findAllByTypeAndSetupContainingOrPunchlineContaining(type, input, input);
         return foundJokes;
     }
@@ -61,10 +60,10 @@ public class JokeService {
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
-        
+
         Gson gson = new Gson();
         Joke joke = gson.fromJson(content.toString(), Joke.class);
-         final Joke savedJoke = jokeRepo.save(joke);
+        final Joke savedJoke = jokeRepo.save(joke);
 
         in.close();
         con.disconnect();
