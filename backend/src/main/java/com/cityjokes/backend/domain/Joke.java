@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "joke")
 public class Joke implements Serializable {
 
-    private String id;
+    private int id;
     
     private String type;
     

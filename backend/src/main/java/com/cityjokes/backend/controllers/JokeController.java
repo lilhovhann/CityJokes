@@ -99,7 +99,7 @@ public class JokeController {
     @CrossOrigin
     @Transactional
     public ResponseEntity<?> findPulledJokes() throws IOException {
-       StringBuffer foundJokes = jokeService.pullJokes();
+       Joke foundJokes = jokeService.pullJokes();
      
         return ResponseEntity.status(HttpStatus.OK).body("Joke: "+foundJokes);
     }

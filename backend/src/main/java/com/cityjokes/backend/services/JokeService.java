@@ -2,6 +2,7 @@ package com.cityjokes.backend.services;
 
 import com.cityjokes.backend.domain.Joke;
 import com.cityjokes.backend.repositories.JokeRepository;
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,8 +12,10 @@ import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.json.JSONArray;
 import java.util.List;
 import java.util.Optional;
+import org.json.JSONObject;
 
 /**
  *
@@ -45,7 +48,7 @@ public class JokeService {
         return Optional.ofNullable(savedJoke);
     }
 
-    public StringBuffer pullJokes() throws MalformedURLException, IOException {
+    public Joke pullJokes() throws MalformedURLException, IOException {
 
         URL url = new URL("https://official-joke-api.appspot.com/jokes/random");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -58,10 +61,22 @@ public class JokeService {
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
+        
+        
+
+        Gson gson = new Gson();
+        Joke joke = gson.fromJson(content.toString(), Joke.class);
+         final Joke savedJoke = jokeRepo.save(joke);
+
+//        joke.setId(obj.getInt("id"));
+//        joke.setType(obj.getString("type"));
+//        joke.setSetup(obj.getString("setup"));
+//        joke.setPunchline(obj.getString("punchline"));
+
         in.close();
         con.disconnect();
 
-        return content;
+        return savedJoke;
 
     }
 }
