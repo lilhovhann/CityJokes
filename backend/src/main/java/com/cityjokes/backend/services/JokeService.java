@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.json.JSONArray;
 import java.util.List;
 import java.util.Optional;
-import org.json.JSONObject;
 
 /**
  *
@@ -29,13 +28,14 @@ public class JokeService {
     private JokeRepository jokeRepo;
 
     public List<Joke> findBySearchInput(String searchInput) {
-        List<Joke> foundJokes = jokeRepo.findBySetupContaining(searchInput);
+        List<Joke> foundJokes = jokeRepo.findBySetupContainingOrPunchlineContaining(searchInput, searchInput);
         return foundJokes;
     }
 
-    public Joke findByType(String type) {
-        Joke foundJoke = jokeRepo.findByType(type);
-        return foundJoke;
+    
+       public List<Joke> findByTypeAndKey(String type, String input) {
+        List<Joke> foundJokes = jokeRepo.findAllByTypeAndSetupContainingOrPunchlineContaining(type, input, input);
+        return foundJokes;
     }
 
     public List<Joke> findAll() {

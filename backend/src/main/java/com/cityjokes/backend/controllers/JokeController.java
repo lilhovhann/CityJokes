@@ -58,24 +58,6 @@ public class JokeController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
     }
 
-    @GetMapping(path = "/joke/findbytype", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    @CrossOrigin
-    @Transactional
-    public ResponseEntity<?> findByType(
-            @RequestParam(required = true) String type
-    ) {
-        Joke foundJoke = jokeService.findByType(type);
-
-        if (foundJoke == null) {
-            log.info("There are no jokes with that type");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There are no jokes with that type");
-        }
-
-        log.error("Here it is");
-
-        return ResponseEntity.status(HttpStatus.OK).body(foundJoke.getSetup());
-    }
 
     @GetMapping(path = "/joke/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -91,6 +73,22 @@ public class JokeController {
         log.error("Did not find any jokes");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
     }
+    
+     @GetMapping(path = "/joke/findByType", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public ResponseEntity<?> findByType(@RequestParam(required = true) String type, String input) {
+        List<Joke> foundJokes = jokeService.findByTypeAndKey(type, input);
+        if (!foundJokes.isEmpty()) {
+            log.info("Here");
+            return ResponseEntity.status(HttpStatus.OK).body(foundJokes);
+        }
+
+        log.error("Did not find any jokes");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
+    }
+    
     
     @GetMapping(path = "/joke/pullJokes", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
