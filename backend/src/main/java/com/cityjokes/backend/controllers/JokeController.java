@@ -2,6 +2,7 @@ package com.cityjokes.backend.controllers;
 
 import com.cityjokes.backend.domain.Joke;
 import com.cityjokes.backend.services.JokeService;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -89,6 +90,18 @@ public class JokeController {
 
         log.error("Did not find any jokes");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
+    }
+    
+    
+        
+    @GetMapping(path = "/joke/findPulledJokes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public ResponseEntity<?> findPulledJokes() throws IOException {
+       StringBuffer foundJokes = jokeService.pullJokes();
+     
+        return ResponseEntity.status(HttpStatus.OK).body("Joke: "+foundJokes);
     }
 
 }
