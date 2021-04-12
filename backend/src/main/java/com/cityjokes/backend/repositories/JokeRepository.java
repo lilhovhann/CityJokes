@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface JokeRepository extends MongoRepository<Joke, String> {
+
     Joke findByType(String type);
-    List<Joke> findBySetup(String searchInput);
-   
+    List<Joke> findBySetupContaining(String inputText);
 }

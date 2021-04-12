@@ -41,16 +41,16 @@ public class JokeController {
         return ResponseEntity.status(HttpStatus.OK).body(savedJoke.get());
     }
 
-    @GetMapping(path = "/joke/find", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/joke/findByKey", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public ResponseEntity<?> find(
+    public ResponseEntity<?> findByKey(
             @RequestParam(required = true) String searchKey
     ) {
         List<Joke> foundJokes = jokeService.findBySearchInput(searchKey);
         if (!foundJokes.isEmpty()) {
-            log.info("There are no jokes with that search key");
+            log.info("Here they are");
             return ResponseEntity.status(HttpStatus.OK).body(foundJokes);
         }
 
@@ -92,13 +92,11 @@ public class JokeController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
     }
     
-    
-        
-    @GetMapping(path = "/joke/findPulledJokes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/joke/pullJokes", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public ResponseEntity<?> findPulledJokes() throws IOException {
+    public ResponseEntity<?> pullJokes() throws IOException {
        Joke foundJokes = jokeService.pullJokes();
      
         return ResponseEntity.status(HttpStatus.OK).body("Joke: "+foundJokes);

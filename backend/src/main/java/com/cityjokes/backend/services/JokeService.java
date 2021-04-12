@@ -29,7 +29,7 @@ public class JokeService {
     private JokeRepository jokeRepo;
 
     public List<Joke> findBySearchInput(String searchInput) {
-        List<Joke> foundJokes = jokeRepo.findBySetup(searchInput);
+        List<Joke> foundJokes = jokeRepo.findBySetupContaining(searchInput);
         return foundJokes;
     }
 
@@ -62,21 +62,13 @@ public class JokeService {
             content.append(inputLine);
         }
         
-        
-
         Gson gson = new Gson();
         Joke joke = gson.fromJson(content.toString(), Joke.class);
          final Joke savedJoke = jokeRepo.save(joke);
-
-//        joke.setId(obj.getInt("id"));
-//        joke.setType(obj.getString("type"));
-//        joke.setSetup(obj.getString("setup"));
-//        joke.setPunchline(obj.getString("punchline"));
 
         in.close();
         con.disconnect();
 
         return savedJoke;
-
     }
 }
