@@ -30,23 +30,25 @@
                         <div class="p-col-12 p-lg-3">
                             <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" ajax="false"  
                                              value="Search" action="#{jokebean.doSearch()}" 
-                                             icon="fa fa-search" update="textbox test"/>
+                                             icon="fa fa-search" update="textbox"/>
                         </div>
-                        <div class="card" style="background-color: #FAC403; margin-top: 5%;">
-                            ds
-                            <p:outputLabel id="test" value="#{jokebean.searchKey}" />
+                        <div class="card p-col-12 p-lg-12" style=" margin-top: 5%; border: 2px solid #FAC403;">
+                            <p:outputPanel id="textbox">  
+
+                                <ui:repeat var="joke" value="${jokebean.jokes}">
+                                    <i class="fa fa-star-o"/>
+                                    <span>
+                                        <h:outputText value="#{joke}"/><br/>
+                                    </span>
+                                </ui:repeat>
+                            </p:outputPanel>
                         </div>
 
                     </div>
                 </div>
 
 
-                <div class="card" style="background-color: #FAC403; margin-top: 5%;">
 
-                    <p:outputPanel id="textbox">
-                        #{jokebean.searchedJokes}
-                    </p:outputPanel>
-                </div>
             </div>
         </h:form>
     </ui:define>

@@ -1,6 +1,6 @@
 package com.cityjokes.backend.repositories;
 
-import com.cityjokes.backend.domain.Joke;
+import com.cityjokes.domain.Joke;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

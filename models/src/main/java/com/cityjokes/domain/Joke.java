@@ -1,4 +1,4 @@
-package com.cityjokes.backend.domain;
+package com.cityjokes.domain;
 
 import java.io.Serializable;
 import lombok.AllArgsConstructor;

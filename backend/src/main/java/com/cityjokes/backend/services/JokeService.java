@@ -1,6 +1,6 @@
 package com.cityjokes.backend.services;
 
-import com.cityjokes.backend.domain.Joke;
+import com.cityjokes.domain.Joke;
 import com.cityjokes.backend.repositories.JokeRepository;
 import com.google.gson.Gson;
 import java.io.BufferedReader;

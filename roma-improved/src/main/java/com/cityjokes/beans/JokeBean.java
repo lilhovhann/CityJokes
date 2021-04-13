@@ -21,31 +21,40 @@ import org.apache.log4j.Logger;
 @Named(value = "jokebean")
 @ViewScoped
 public class JokeBean implements Serializable {
-    
- private static final Logger log = Logger.getLogger(JokeBean.class);
- 
+
+    private static final Logger log = Logger.getLogger(JokeBean.class);
+
     @Inject
     private JokeClient jokeClient;
-    
+
     private String searchKey;
+    private String wholeJoke;
+
+    private List<String> jokes;
 
     private Joke joke = new Joke();
     private List<Joke> searchedJokes = new ArrayList<>();
 
     public JokeBean() {
     }
-    
-        @PostConstruct 
+
+    @PostConstruct
     public void init() {
-     System.out.println("Start init");
+        System.out.println("Start init");
+        jokes = new ArrayList<>();
     }
 
-    public List<Joke> doSearch() {
+    public List<String> doSearch() {
         log.info("Start search");
-        
+        jokes = new ArrayList<>();
+
         searchedJokes = jokeClient.getJokes(searchKey).getJokeList();
-        log.info("================Jokes are" +searchedJokes);
-        return searchedJokes;
+        for (Joke item : searchedJokes) {
+            wholeJoke = item.getSetup() +" "+ item.getPunchline();
+            jokes.add(wholeJoke);
+        }
+
+        return jokes;
     }
 
     public List<Joke> getSearchedJokes() {
@@ -63,9 +72,13 @@ public class JokeBean implements Serializable {
     public void setSearchKey(String searchKey) {
         this.searchKey = searchKey;
     }
-    
-    
 
-  
+    public String getWholeJoke() {
+        return wholeJoke;
+    }
+
+    public List<String> getJokes() {
+        return jokes;
+    }
 
 }

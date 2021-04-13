@@ -95,7 +95,6 @@ public class JokeClient implements Serializable {
             request.addHeader("content-type", "application/json;charset=UTF-8");
             request.addHeader("charset", "UTF-8");
             CloseableHttpResponse response = httpClient.execute(request);
-            LOG.info("========== "+response);
             try (CloseableHttpResponse httpResponse = httpClient.execute(request)) {
                 model = GsonConverter.fromJson(EntityUtils.toString(httpResponse.getEntity()), JokeApiResponse.class);
             }

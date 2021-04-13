@@ -1,7 +1,8 @@
 package com.cityjokes.backend.controllers;
 
-import com.cityjokes.backend.domain.Joke;
+import com.cityjokes.domain.Joke;
 import com.cityjokes.backend.services.JokeService;
+import com.cityjokes.response.JokeApiResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,19 +46,18 @@ public class JokeController {
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public ResponseEntity<?> findByKey(
-            @RequestParam(required = true) String searchKey
-    ) {
+    public ResponseEntity<?> findByKey(@RequestParam(required = true) String searchKey) {
         List<Joke> foundJokes = jokeService.findBySearchInput(searchKey);
+        JokeApiResponse response = new JokeApiResponse();
         if (!foundJokes.isEmpty()) {
             log.info("Here they are");
-            return ResponseEntity.status(HttpStatus.OK).body(foundJokes);
+            response.getJokeList().addAll(foundJokes);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
         log.error("Did not find any jokes");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
     }
-
 
     @GetMapping(path = "/joke/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -73,8 +73,8 @@ public class JokeController {
         log.error("Did not find any jokes");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
     }
-    
-     @GetMapping(path = "/joke/findByType", produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @GetMapping(path = "/joke/findByType", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @CrossOrigin
     @Transactional
@@ -88,16 +88,15 @@ public class JokeController {
         log.error("Did not find any jokes");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Did not find any jokes");
     }
-    
-    
+
     @GetMapping(path = "/joke/pullJokes", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @CrossOrigin
     @Transactional
     public ResponseEntity<?> pullJokes() throws IOException {
-       Joke foundJokes = jokeService.pullJokes();
-     
-        return ResponseEntity.status(HttpStatus.OK).body("Joke: "+foundJokes);
+        Joke foundJokes = jokeService.pullJokes();
+
+        return ResponseEntity.status(HttpStatus.OK).body("Joke: " + foundJokes);
     }
 
 }
