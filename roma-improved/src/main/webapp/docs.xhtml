@@ -1,0 +1,920 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Documentation</ui:define>
+    
+    <ui:define name="head">
+        <style type="text/css">
+            .docs h1 {
+                margin: 2em 0 1em 0;
+            }
+            
+            .docs p,
+            .docs li {
+                line-height: 1.5;
+            }
+            
+            .docs pre {
+                font-family: monospace;
+                background-color: #EFEFEF;
+                color: #333333;
+                padding: 1em;
+                font-size: 14px;
+                border-radius: 3px;
+                overflow: auto;
+            }
+
+            .docs p i {
+                background-color: #ffe7cc;
+                color: #333333;
+                border-radius: 2px;
+                padding: .125em .25em;
+                font-style: normal;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="viewname">
+        <li><p:link outcome="/docs">Documentation</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+    
+        <div class="p-grid">
+            <div class="p-col-12">
+                <div class="card docs">   
+                    <h1>Getting Started</h1>
+                    <p>First of all, you'd need SASS to compile CSS, proceed to <a href="https://sass-lang.com/install">SASS Installation</a> before beginning if you do not have SASS available in your command line.</p>
+                    <p>Demo project has an integrated jetty plugin so running the sample is easy as building the css first followed by the mvn jetty:run command.</p>
+<pre>
+sass --update src/main/webapp/resources/:src/main/webapp/resources/
+mvn jetty:run
+</pre> 
+                    <p>Navigate to <b>http://localhost:8080/roma</b> to view the demos which is exactly same as the live version.</p>
+                    
+                    <h1>Layout</h1>
+                    <p>Roma utilizes <a href="http://docs.oracle.com/javaee/6/tutorial/doc/giqxp.html">JSF templating APIs</a> and provides a main <i>template.xhtml</i> along with additional <i>topbar</i>, <i>sidebar</i>, <i>rightpanel</i> and <i>footer</i> fragments for the base layout.
+                        These xhtml files must be placed under WEB-INF folder and client pages should reference the template.xhtml as their template. 
+                        Provided empty.xhtml is a sample content page using the main template.xhtml that defines "content" as the main ui:define placeholder. By default template defines 3 placeholders 
+                        (page title, head and actual content) and you many add more as per your requirements.</p>
+                        
+                    <p>Sample page below uses the main template from roma.</p>
+<pre>
+&lt;ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"&gt;
+                
+    &lt;ui:define name="title"&gt;Test Page&lt;/ui:define&gt;
+
+    &lt;ui:define name="content"&gt;
+        Content goes here
+    &lt;/ui:define&gt;
+
+&lt;/ui:composition&gt;
+</pre>
+                    
+                    <p>Other required assets are the css, javascript and images that are located inside resources/roma-layout folder, simply copy the roma-layout folder to your <i>%WEB-APP-FOLDER%/resources</i> folder
+                        so that final path would be <i>%WEB-APP-FOLDER%/resources/roma-layout/</i>. Please refer to demo app or maven project of the demo app as the reference.</p>
+                    
+                    <h1>GuestPreferences Bean</h1>
+                    <p>GuestPreferences is a simple session scoped bean to keep the user customizations of the layout, template xhtml files
+                    refer to this bean to dynamically change their behavior such as menu mode or theme. This bean is not necessary to run the roma
+                    and only used for demo purposes. For example template.xhtml includes layout color depending on a user preference using an EL expression.</p>
+<pre>
+&lt;h:outputStylesheet name="css/layout-\#{guestPreferences.theme}.css" library="roma-layout" /&gt;
+</pre>               
+                    <p>In your application, you may also need a similar bean to make the template dynamic so that your users will be able to change their preferred menu or theme.</p>  
+                       
+                    <p>Source code of GuestPreferences.</p>
+<pre>
+public class GuestPreferences implements Serializable {
+
+    private String menuMode = "layout-static";
+
+    private String theme = "blue";
+
+    private String menuColor = "layout-menu-light";
+
+    private String topBarColor = "layout-topbar-blue";
+
+    private String logo = "logo-roma-white";
+
+    private String profileMode = "popup";
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
+    public String getMenuMode() {
+        return this.menuMode;
+    }
+
+    public void setMenuMode(String menuMode) {
+        this.menuMode = menuMode;
+
+        if (this.menuMode.equals("layout-horizontal")) {
+            this.profileMode = "popup";
+        }
+    }
+
+    public String getMenuColor() {
+        return this.menuColor;
+    }
+
+    public void setMenuColor(String menuColor) {
+        this.menuColor = menuColor;
+    }
+
+    public String getTopBarColor() {
+        return this.topBarColor;
+    }
+
+    public void setTopBarColor(String topBarColor, String logo) {
+        this.topBarColor = topBarColor;
+        this.logo = logo;
+    }
+
+    public String getLogo() {
+        return this.logo;
+    }
+
+    public String getProfileMode() {
+        return this.profileMode;
+    }
+
+    public void setProfileMode(String profileMode) {
+        if (this.menuMode.equals("layout-horizontal")) {
+            this.profileMode = "popup";
+        }
+        else {
+            this.profileMode = profileMode;
+        }
+    }
+} 
+</pre>
+                    
+                    <h1>Theme</h1>
+                    <p>Roma provides 15 PrimeFaces theme colors out of the box. Setup of a theme simple as including the theme jar in your classpath and defining primefaces.THEME
+                        context parameter in web.xml such as <i>primefaces-roma-amber</i>. Full list of available themes are;</p>
+                    
+                    <ul>
+                        <li>roma-blue</li>
+                        <li>roma-bluegrey</li>
+                        <li>roma-brown</li>
+                        <li>roma-cyan</li>
+                        <li>roma-deeporange</li>
+                        <li>roma-deeppurple</li>
+                        <li>roma-green</li>
+                        <li>roma-indigo</li>
+                        <li>roma-lime</li>
+                        <li>roma-magenta</li>
+                        <li>roma-orange</li>
+                        <li>roma-pink</li>
+                        <li>roma-purple</li>
+                        <li>roma-rose</li>
+                        <li>roma-teal</li>
+                    </ul>
+                    
+                    <p>A custom theme can be developed by the following steps.</p>
+                    <ul>
+                        <li>Create a custom theme folder such as primefaces-roma-myown under webapp/resources and place an empty theme.scss inside.</li>
+                        <li>Copy the sass folder from the distribution to webapp/resources.</li>
+                        <li>Define the variables listed below along with the imports at the end.</li>
+                        <li>Build the scss to generate css.</li>
+                        <li>Set primefaces.THEME context parameter as <i>roma-myown</i></li>
+                        <li>Either bundle the css in a jar file for reuse between different projects or serve from webapp/resources/primefaces-roma-myown folder using a h:outputStyleSheet.</li>
+                    </ul>
+                    
+                    <p>Here are the variables required to create a theme.</p>
+                        
+<pre>
+$primaryDarkestColor:#1F434F;
+$primaryDarkerColor:#2C5462;
+$primaryColor:#578697;
+$primaryLighterColor:#719BAA;
+$primaryLightestColor:#89B1BF;
+$primaryColorText:#ffffff;
+
+@import '../sass/_theme_variables';
+@import '../sass/theme/_core';
+</pre> 
+                        
+                    <p> An example sass command to compile the css would be;</p>
+                        
+<pre>
+sass --update src/main/webapp/resources/primefaces-roma-myown/theme.scss:src/main/webapp/resources/primefaces-roma-myown/theme.css
+</pre>
+
+                    <p>Watch mode is handy to avoid compiling everytime when a change is made, instead use the following command
+                    so that sass generates the file whenever you make a customization. This builds all css files whenever a change is made to any scss file.</p>
+<pre>
+sass --watch src/main/webapp/resources/primefaces-roma-myown/theme.scss:src/main/webapp/resources/primefaces-roma-myown/theme.css
+</pre> 
+
+                    <h1>Layout</h1>
+                    <p>Layout customization is similar to theme method.</p>
+                    <ul>
+                        <li>Choose a layout name such as layout-myown.</li>
+                        <li>Create an empty file named layout-myown.scss inside resources/roma-layout/css folder.</li>
+                        <li>Copy the sass folder from the distribution to webapp/resources.</li>
+                        <li>Define the variables listed below along with the import at the end.</li>
+                        <li>Build the scss to generate css</li>
+                        <li>Serve the css by importing it using h:outputStylesheet.</li>
+                    </ul>
+
+                    <p>Here are the variables required to create a layout.</p>
+                        
+<pre>
+$primaryColor:#0f97c7;
+$primaryTextColor:#ffffff;
+
+@import '../../sass/layout/_layout';
+</pre> 
+
+                    <h1>SASS Variables</h1>
+                    <p>In case you'd like to customize common variables such as font-size, the <i>_variables.scss</i> under the sass folder is where they are defined.</p>
+<pre>
+$fontFamily:'Inter UI',sans-serif;
+$fontSize:13px;
+$textColor:#252529;
+$textSecondaryColor:#65656a;
+$borderRadius:2px;
+$transitionDuration:.2s;
+</pre> 
+
+                    <p><i>_variables.scss</i> under sass/layout folder define the shared variables of the layout.</p>
+<pre>
+@import '../_variables';
+
+//main
+$bodyBgColor:#f4f4f4;
+
+$footerBgColor:#ffffff;
+$footerBorderColor:#ebebef;
+
+//light menu
+$menuBgColor:#ffffff;
+$menuBorderColor:#ebebef;
+$menuitemTextColor:#666666;
+$menuitemIconColor:#65656a;
+$menuitemTextHoverColor:#252529;
+$menuitemIconHoverColor:#252529;
+$menuitemHoverBgColor:#eaeaea;
+$menuitemSeparator:#ebebef;
+
+//dark menu
+$darkMenuBgColor:#252529;
+$darkMenuBorderColor:#252529;
+$darkMenuitemTextColor:#8b8b90;
+$darkMenuitemIconColor:#a6a6a6;
+$darkMenuitemTextHoverColor:#ebebef;
+$darkMenuitemIconHoverColor:#ebebef;
+$darkMenuitemHoverBgColor:#2e2e33;
+$darkMenuitemSeparator:#424247;
+
+$slimMenuTooltipBgColor:#333333;
+$slimMenuTooltipTextColor:#c8c8c8;
+    
+    
+</pre>
+
+                    <p>Similarly <i>_theme_variables.scss</i> files under sass contains the whole set of variables to generate a PrimeFaces theme.</p>
+
+<div style="height:400px;overflow: auto">
+<pre>
+@import './variables';
+
+//icons
+$iconWidth:1em;
+$iconHeight:1em;
+$iconFontSize:1em;
+
+//anchors
+$linkColor:$primaryColor;
+$linkHoverColor:$primaryDarkerColor;
+$linkActiveColor:$primaryDarkestColor;
+
+//input field
+$inputPadding:.5em;
+$inputBgColor:#ffffff;
+$inputBorder:1px solid #a9a9ae;
+$inputHoverBorderColor:#525257;
+$inputFocusBorderColor:$primaryColor;
+$inputErrorBorderColor:#e0284f;
+$inputPlaceholderTextColor:$textSecondaryColor;
+$inputFocusShadow:0 0 0 0.2em $primaryLightestColor;
+$inputTransition:border-color $transitionDuration,box-shadow $transitionDuration;
+
+//groups
+$inputGroupBorderColor:#a9a9ae;
+$inputGroupBgColor:#ffffff;
+$inputGroupTextColor:$textColor;
+$inputGroupIconColor:$textSecondaryColor;
+$inputGroupAddonMinWidth:2*$fontSize;
+
+//input lists
+$inputListMinWidth:12em;
+$inputListBgColor:#ffffff;
+$inputListBorder:1px solid #a9a9ae;
+$inputListPadding:.65em 0;
+
+$inputListItemPadding:.5em .75em;
+$inputListItemBgColor:transparent;
+$inputListItemTextColor:$textColor;
+$inputListItemHoverBgColor:#eaeaea;
+$inputListItemHoverTextColor:$primaryColor;
+$inputListItemHighlightBgColor:$primaryColor;
+$inputListItemHighlightTextColor:$primaryColorText;
+$inputListItemBorder:0 none;
+$inputListItemBorderRadius:0;
+$inputListItemMargin:0;
+$inputListItemTransition:background-color $transitionDuration;
+
+$inputListHeaderPaddingTop:.5em;
+$inputListHeaderPaddingLeft:.75em;
+$inputListHeaderPaddingRight:.75em;
+$inputListHeaderPaddingBottom:.5em;
+$inputListHeaderBgColor:#ffffff;
+$inputListHeaderTextColor:$textColor;
+$inputListHeaderBorder:1px solid #d8d8dc;
+
+$inputListHeaderSearchIconColor:$textSecondaryColor;
+$inputListHeaderCloseIconColor:$textColor;
+$inputListHeaderCloseIconHoverColor:$primaryColor;
+$inputListHeaderCloseIconTransition:color $transitionDuration;
+
+//inputs with panels (password, keyboard)
+$inputContentPanelPadding:.75em;
+$inputContentPanelBgColor:#ffffff;
+$inputContentPanelTextColor:$textColor;
+
+//inputs with overlays
+$inputOverlayBorder:0 none;
+$inputOverlayShadow:0 0 10px 0 rgba(0, 0, 0, 0.16);
+
+//input dropdowns
+$inputDropdownIconColor:$textSecondaryColor;
+
+//inputs with buttons
+$inputButtonWidth:2.143em;
+
+//button
+$buttonTextOnlyPadding:.5em 1em;
+$buttonWithLeftIconPadding:.5em 1em .5em 2em;
+$buttonWithRightIconPadding:.5em 2em .5em 1em;
+$buttonIconOnlyPadding:.5em;
+$buttonIconOnlyWidth:2.143em;
+
+$buttonBgColor:$primaryColor;
+$buttonBorder:1px solid $primaryColor;
+$buttonTextColor:$primaryColorText;
+
+$buttonHoverBgColor:$primaryLighterColor;
+$buttonHoverBorderColor:$primaryLighterColor;
+$buttonHoverTextColor:$primaryColorText;
+
+$buttonActiveBgColor:$primaryDarkerColor;
+$buttonActiveBorderColor:$primaryDarkerColor;
+$buttonActiveTextColor:$primaryColorText;
+
+$buttonFocusOutline:0 none;
+$buttonFocusOutlineOffset:0;
+$buttonFocusShadow:0 0 0 0.2em $primaryLightestColor;
+$buttonTransition:background-color $transitionDuration,box-shadow $transitionDuration;
+$raisedButtonShadow:0 2px 4px 0 rgba(0, 0, 0, 0.10);
+$roundedButtonBorderRadius:1em;
+
+//button severities
+$secondaryButtonBgColor:$primaryColorText;
+$secondaryButtonBorder:1px solid $primaryColor;
+$secondaryButtonTextColor:$primaryColor;
+$secondaryButtonHoverBgColor:$primaryLighterColor;
+$secondaryButtonHoverTextColor:$primaryColorText;
+$secondaryButtonHoverBorderColor:$primaryLighterColor;
+$secondaryButtonActiveBgColor:$primaryDarkerColor;
+$secondaryButtonActiveTextColor:$primaryColorText;
+$secondaryButtonActiveBorderColor:$primaryDarkerColor;
+$secondaryButtonFocusShadow:$buttonFocusShadow;
+
+$helpButtonBgColor:#7863ae;
+$helpButtonTextColor:#ffffff;
+$helpButtonBorder:1px solid #7863ae;
+$helpButtonHoverBgColor:#7d79e5;
+$helpButtonHoverTextColor:#ffffff;
+$helpButtonHoverBorderColor:#7d79e5;
+$helpButtonActiveBgColor:#392865;
+$helpButtonActiveTextColor:#ffffff;
+$helpButtonActiveBorderColor:#392865;
+$helpButtonFocusShadow:0 0 0 0.2em #a29fe7;
+
+$warningButtonBgColor:#f5b064;
+$warningButtonTextColor:#ffffff;
+$warningButtonBorder:1px solid #f5b064;
+$warningButtonHoverBgColor:#ffbf3c;
+$warningButtonHoverTextColor:#ffffff;
+$warningButtonHoverBorderColor:#ffbf3c;
+$warningButtonActiveBgColor:#cb7d27;
+$warningButtonActiveTextColor:#ffffff;
+$warningButtonActiveBorderColor:#cb7d27;
+$warningButtonFocusShadow:0 0 0 0.2em #fad78e;
+
+$successButtonBgColor:#0fc763;
+$successButtonTextColor:#ffffff;
+$successButtonBorder:1px solid #0fc763;
+$successButtonHoverBgColor:#31e885;
+$successButtonHoverTextColor:#ffffff;
+$successButtonHoverBorderColor:#31e885;
+$successButtonActiveBgColor:#0a9c4d;
+$successButtonActiveTextColor:#ffffff;
+$successButtonActiveBorderColor:#0a9c4d;
+$successButtonFocusShadow:0 0 0 0.2em #72ffb3;
+
+$infoButtonBgColor:#3f8efc;
+$infoButtonTextColor:#ffffff;
+$infoButtonBorder:1px solid #3f8efc;
+$infoButtonHoverBgColor:#54ccff;
+$infoButtonHoverTextColor:#ffffff;
+$infoButtonHoverBorderColor:#54ccff;
+$infoButtonActiveBgColor:#0c54b8;
+$infoButtonActiveTextColor:#ffffff;
+$infoButtonActiveBorderColor:#0c54b8;
+$infoButtonFocusShadow:0 0 0 0.2em #6fd4ff;
+
+$dangerButtonBgColor:#f56f64;
+$dangerButtonTextColor:#ffffff;
+$dangerButtonBorder:1px solid #f56f64;
+$dangerButtonHoverBgColor:#ff4545;
+$dangerButtonHoverTextColor:#ffffff;
+$dangerButtonHoverBorderColor:#ff4545;
+$dangerButtonActiveBgColor:#a8281e;
+$dangerButtonActiveTextColor:#ffffff;
+$dangerButtonActiveBorderColor:#a8281e;
+$dangerButtonFocusShadow:0 0 0 0.2em #ff4545;
+
+//checkbox
+$checkboxWidth:20px;
+$checkboxHeight:20px;
+$checkboxActiveBorderColor:$primaryColor;
+$checkboxActiveBgColor:$primaryColor;
+$checkboxActiveHoverBgColor:$primaryLighterColor;
+$checkboxActiveTextColor:$primaryColorText;
+$checkboxFocusShadow:0 0 0 0.2em $primaryLightestColor;
+$checkboxTransition:background-color $transitionDuration, box-shadow $transitionDuration;
+
+//radiobutton
+$radioButtonWidth:20px;
+$radioButtonHeight:20px;
+$radioButtonActiveBorderColor:$primaryColor;
+$radioButtonActiveBgColor:$primaryColor;
+$radioButtonActiveHoverBgColor:$primaryLighterColor;
+$radioButtonActiveTextColor:$primaryColorText;
+$radioButtonFocusShadow:0 0 0 0.2em $primaryLightestColor;
+$radioButtonTransition:background-color $transitionDuration, box-shadow $transitionDuration;
+
+//togglebutton
+$toggleButtonBgColor:#eaeaea;
+$toggleButtonBorder:1px solid #eaeaea;
+$toggleButtonTextColor:$textColor;
+$toggleButtonIconColor:$textColor;
+$toggleButtonHoverBgColor:#eaeaea;
+$toggleButtonHoverBorderColor:#eaeaea;
+$toggleButtonHoverTextColor:$primaryColor;
+$toggleButtonHoverIconColor:$primaryColor;
+$toggleButtonActiveBgColor:$primaryColor;
+$toggleButtonActiveBorderColor:$primaryColor;
+$toggleButtonActiveTextColor:$primaryColorText;
+$toggleButtonActiveIconColor:$primaryColorText;
+$toggleButtonActiveHoverBgColor:$primaryLighterColor;
+$toggleButtonActiveHoverBorderColor:$primaryLighterColor;
+$toggleButtonActiveHoverTextColor:$primaryColorText;
+$toggleButtonActiveHoverIconColor:$primaryColorText;
+
+//inplace
+$inplacePadding:.5em;
+$inplaceHoverBgColor:#ebebef;
+$inplaceHoverTextColor:$textColor;
+$inplaceTransition:background-color $transitionDuration;
+
+//rating
+$ratingTransition:color $transitionDuration;
+$ratingCancelIconColor:#e0284f;
+$ratingCancelHoverIconColor:#e0284f;
+$ratingIconWidth:1.5em;
+$ratingIconHeight:1.5em;
+$ratingIconFontSize:1.5em;
+$ratingStarIconColor:$textColor;
+$ratingStarIconHoverColor:$primaryColor;
+$ratingStarActiveIconColor:$primaryColor;
+
+//slider
+$sliderBgColor:#d8d8dc;
+$sliderHeight:.286em;
+$sliderWidth:.286em;
+$sliderHandleWidth:1.5em;
+$sliderHandleHeight:1.5em;
+$sliderHandleBgColor:$primaryColor;
+$sliderHandleBorder:2px solid $primaryColor;
+$sliderHandleHoverBorder:2px solid $primaryColor;
+$sliderHandleHoverBgColor:$primaryLighterColor;
+$sliderHandleFocusBorder:2px solid $primaryColor;
+$sliderHandleFocusBgColor:$primaryLightestColor;
+$sliderHandleBorderRadius:50%;
+$sliderHandleTransition:background-color $transitionDuration;
+$sliderRangeBgColor:$primaryColor;
+
+//calendar
+$calendarWidth:20em;
+$calendarNavIconColor:$textSecondaryColor;
+$calendarNavIconHoverColor:$textColor;
+$calendarNavIconTransition:color $transitionDuration;
+$calendarTitlePadding:0 .857em;
+$calendarTitleBgColor:inherit;
+$calendarTitleTextColor:$textColor;
+$calendarTableMargin:.857em 0 0 0;
+$calendarCellPadding:.286em;
+$calendarCellDatePadding:.286em;
+$calendarCellDateAnchorPadding:.286em;
+$calendarCellDateBorder:1px solid transparent;
+$calendarCellDateHoverBgColor:#ebebef;
+$calendarCellDateHoverBorder:1px solid #ebebef;
+$calendarCellDateBorderRadius:$borderRadius;
+$calendarCellDateSelectedBgColor:$primaryColor;
+$calendarCellDateSelectedTextColor:$primaryColorText;
+$calendarCellDateSelectedBorder:1px solid $primaryColor;
+$calendarCellDateTodayBgColor:transparent;
+$calendarCellDateTodayTextColor:$primaryColor;
+$calendarCellDateTodayBorder:1px solid transparent;
+$calendarOverlayBorder:0 none;
+$calendarTimePickerMargin:.857em 0;
+$calendarTimePickerLabelPadding:0;
+$calendarTimePickerInputPadding:.5em 0;
+$calendarTimePickerInputMargin:0 .714em .714em 40%;
+
+//spinner
+$spinnerButtonWidth:1.5em;
+$spinnerButtonBorder:0 none;
+$spinnerButtonBgColor:#ffffff;
+$spinnerButtonTextColor:$textColor;
+$spinnerButtonHoverBorder:0 none;
+$spinnerButtonHoverBgColor:#ebebef;
+$spinnerButtonHoverTextColor:$textColor;
+$spinnerButtonActiveBorder:0 none;
+$spinnerButtonActiveBgColor:$primaryColor;
+$spinnerButtonActiveTextColor:$primaryColorText;
+
+//keyboard
+$keyboardButtonPadding:.5em;
+$keyboardButtonMargin:2px;
+$keyboardButtonBorder:$inputBorder;
+$keyboardButtonBgColor:$inputBgColor;
+$keyboardButtonTextColor:$textColor;
+$keyboardButtonHoverBorder:1px solid $inputBorder;
+$keyboardButtonHoverBgColor:#ebebef;
+$keyboardButtonHoverTextColor:$textColor;
+$keyboardButtonActiveBorder:1px solid $buttonActiveBorderColor;
+$keyboardButtonActiveBgColor:$buttonActiveBgColor;
+$keyboardButtonActiveTextColor:#ffffff;
+$keyboardSpecialButtonBorder:$buttonBorder;
+$keyboardSpecialButtonBgColor:$buttonBgColor;
+$keyboardSpecialButtonTextColor:$buttonTextColor;
+$keyboardSpecialButtonHoverBorder:1px solid $buttonHoverBorderColor;
+$keyboardSpecialButtonHoverBgColor:$buttonHoverBgColor;
+$keyboardSpecialButtonHoverTextColor:$buttonHoverTextColor;
+
+//chips
+$chipBgColor:$primaryColor;
+$chipTextColor:$primaryColorText;
+$chipBorder:1px solid $primaryColor;
+$chipItemMargin:0 .286em 0 0;
+
+//panel common
+$panelHeaderBorder:1px solid #d8d8dc;
+$panelHeaderBgColor:#ffffff;
+$panelHeaderTextColor:$textColor;
+$panelHeaderIconColor:$textSecondaryColor;
+$panelHeaderIconHoverColor:$textColor;
+$panelHeaderIconTransition:color $transitionDuration;
+$panelHeaderFontWeight:500;
+$panelHeaderPadding:.857em 1em;
+$panelContentBorder:1px solid #d8d8dc;
+$panelContentBgColor:#ffffff;
+$panelContentTextColor:$textColor;
+$panelContentPadding:.571em 1em;
+$panelContentLineHeight:1.5;
+$panelFooterBorder:1px solid #d8d8dc;
+$panelFooterBgColor:#ffffff;
+$panelFooterTextColor:$textColor;
+$panelFooterPadding:.571em 1em;
+$panelHeaderHoverBgColor:#eaeaea;
+$panelHeaderHoverBorder:1px solid #d8d8dc;
+$panelHeaderHoverTextColor:$textColor;
+$panelHeaderHoverIconColor:$textColor;
+$panelHeaderActiveBgColor:#ffffff;
+$panelHeaderActiveBorder:1px solid #d8d8dc;
+$panelHeaderActiveTextColor:$primaryColor;
+$panelHeaderActiveIconColor:$primaryColor;
+$panelHeaderActiveHoverBgColor:#eaeaea;
+$panelHeaderActiveHoverBorder:1px solid #d8d8dc;
+$panelHeaderActiveHoverTextColor:$primaryColor;
+$panelHeaderActiveHoverIconColor:$primaryColor;
+$panelHeaderTransition:background-color $transitionDuration, box-shadow $transitionDuration;
+
+//accordion
+$accordionHeaderMargin:2px;
+
+//tabview
+$tabsHeaderSpacing:.214em;
+$tabsNavBorder:0 none;
+$tabsNavBgColor:#ffffff;
+
+//scrollpanel
+$scrollPanelHandleBgColor:#dadada;
+$scrollPanelTrackBorder:0 none;
+$scrollPanelTrackBgColor:#f8f8f8;
+
+//paginator
+$paginatorBgColor:#ffffff;
+$paginatorBorder:1px solid #d8d8dc;
+$paginatorIconColor:$textSecondaryColor;
+$paginatorPadding:.25em 0;
+$paginatorElementWidth:2.286em;
+$paginatorElementHeight:2.286em;
+$paginatorElementHoverBgColor:#eaeaea;
+$paginatorElementHoverIconColor:$textColor;
+$paginatorElementMargin:0 .125em;
+$paginatorElementBorder:1px solid transparent;
+$paginatorElementHoverBorder:1px solid transparent;
+$paginatorElementBorderRadius:$borderRadius;
+$paginatorElementTransition:background-color $transitionDuration;
+
+//datatable
+$datatableHeaderCellPadding:.75em 1.214em;
+$datatableHeaderCellBgColor:#ffffff;
+$datatableHeaderCellTextColor:$textColor;
+$datatableHeaderCellFontWeight:500;
+$datatableHeaderCellBorder:1px solid #d8d8dc;
+$datatableHeaderCellHoverBgColor:#eaeaea;
+$datatableHeaderCellHoverTextColor:$textColor;
+$datatableBodyRowBgColor:#ffffff;
+$datatableBodyRowTextColor:$textColor;
+$datatableBodyRowBorder:1px solid #d8d8dc;
+$datatableBodyRowEvenBgColor:#f8f8f8;
+$datatableBodyRowHoverBgColor:#eaeaea;
+$datatableBodyRowHoverTextColor:$textColor;
+$datatableBodyCellPadding:.75em 1.214em;
+$datatableFooterCellPadding:.75em 1.214em;
+$datatableFooterCellBgColor:#ffffff;
+$datatableFooterCellTextColor:$textColor;
+$datatableFooterCellFontWeight:500;
+$datatableFooterCellBorder:1px solid #d8d8dc;
+$datatableResizerHelperBgColor:$primaryColor;
+$datatableDataIconColor:$textSecondaryColor;
+
+//schedule
+$scheduleEventBgColor:$primaryColor;
+$scheduleEventBorder:1px solid $primaryColor;
+$scheduleEventTextColor:$primaryColorText;
+
+//tree
+$treeNodePadding:.143em 0;
+$treeNodeLabelPadding:.286em;
+
+//treetable
+$treeTableEditingCellPaddingLeft:1.214em;;
+
+//messages
+$messagesMargin:1em 0;
+$messagesPadding:1em;
+$messagesIconFontSize:1.714em;
+$infoMessageBgColor:#1cb9d7;
+$infoMessageBorder:1px solid #1cb9d7;
+$infoMessageTextColor:#ffffff;
+$infoMessageIconColor:#ffffff;
+$warnMessageBgColor:#f5b064;
+$warnMessageBorder:1px solid #f5b064;
+$warnMessageTextColor:#ffffff;
+$warnMessageIconColor:#ffffff;
+$errorMessageBgColor:#f56f64;
+$errorMessageBorder:1px solid #f56f64;
+$errorMessageTextColor:#ffffff;
+$errorMessageIconColor:#ffffff;
+$fatalMessageBgColor:#65656a;
+$fatalMessageBorder:1px solid #65656a;
+$fatalMessageTextColor:#ffffff;
+$fatalMessageIconColor:#ffffff;
+$growlIconFontSize:3.5em;
+$growlMargin:0 0 1em 0;
+$growlPadding:1em;
+$growlShadow:0 3px .5em 0 rgba(0, 0, 0, 0.16);
+$messagePadding:$inputPadding;
+$messageMargin:0;
+
+//overlays
+$overlayContentBorder:0 none;
+$overlayContainerShadow:0 0 10px 0 rgba(0, 0, 0, 0.16);
+
+//overlay panel
+$overlayPanelCloseIconBgColor:$primaryColor;
+$overlayPanelCloseIconColor:$primaryColorText;
+$overlayPanelCloseIconHoverBgColor:$primaryLighterColor;
+$overlayPanelCloseIconHoverColor:$primaryColorText;
+
+//tooltip
+$tooltipBgColor:#252529;
+$tooltipTextColor:#ffffff;
+
+//steps
+$stepsItemBgColor:#ffffff;
+$stepsItemBorder:1px solid #d8d8dc;
+$stepsItemBorderRadius:50%;
+$stepsItemActiveBorder:1px solid $primaryColor;
+$stepsItemNumberColor:$textColor;
+$stepsItemTextColor:$textSecondaryColor;
+$stepsItemWidth:2em;
+$stepsItemHeight:2em;
+
+//progressbar
+$progressBarHeight:1.714em;
+$progressBarBorder:0 none;
+$progressBarBgColor:#efefef;
+$progressBarValueBgColor:$primaryColor;
+
+//menu
+$menuitemSubMenuPadding:0;
+$menuBgColor:#ffffff;
+$menuBorder:1px solid #d8d8dc;
+$menuPadding:0;
+$menuTextColor:$textColor;
+$menuitemPadding:.571em .857em;
+$menuitemTextColor:$textColor;
+$menuitemIconColor:$textSecondaryColor;
+$menuitemHoverTextColor:$textColor;
+$menuitemHoverIconColor:$textColor;
+$menuitemHoverBgColor:#eaeaea;
+$toggleableMenuHeaderMargin:1px;
+$overlayMenuBorder:0 none;
+$overlayMenuShadow:0 0 10px 0 rgba(0, 0, 0, 0.16);
+
+//upload
+$fileItemPadding:0.5em 0.75em;
+
+//misc
+$maskBgColor:rgba(0, 0, 0, 0.4);
+$inlineSpacing:.5em;
+$dataIconColor:$textSecondaryColor;
+$dataIconHoverColor:$textColor;
+
+//general
+$disabledOpacity:.5;
+</pre>
+</div>
+
+                    <h1>Menu</h1>    
+                    <p>Menu is a regular JSF component that supports PrimeFaces MenuModel API, allowing both declarative and programmatic approaches.</p>
+<pre>
+xmlns:po="http://primefaces.org/roma"
+
+&lt;po:menu&gt;
+&lt;/po:menu&gt;
+</pre>  
+                    <p>Menu has 4 modes; static, overlay, horizontal and slim. Layout wrapper element in template.xhtml is used to define which mode to use by adding specific classes. Default
+                    is static and here is the list of classes for each mode.</p>
+                    <ul>
+                        <li>Static: "layout-static"</li>
+                        <li>Overlay: "layout-overlay"</li>
+                        <li>Horizontal: "layout-horizontal"</li>
+                        <li>Slim: "layout-slim"</li>
+                    </ul>
+
+                    <p>Example layout below always uses a slim mode.</p>
+<pre>
+&lt;div class="layout-wrapper layout-slim"&gt;
+...
+&lt;/div&gt;
+</pre>
+                    
+                    <p>Layout mode can be dynamic using an EL expression as well using an example bean like guestPreferences so that your users can choose the layout they prefer when using your application.</p>
+<pre>
+&lt;div class="layout-wrapper \#{guestPreferences.menuMode}"&gt;
+...
+&lt;/div&gt;
+</pre>
+                    
+                    <h1>RTL</h1>
+                    <p>RTL orintetation for the layout is enabled by adding "layout-rtl" to the main layout-wrapper element.</p>
+<pre>
+&lt;div class="layout-wrapper layout-rtl"&gt;
+    ...
+&lt;/div&gt;
+</pre> 
+
+                    <b>Menu Colors</b>
+                    <p>In addition to layout options, menu can be styled as "light" or "dark", default mode is light and in order to enable dark mode, add "layout-menu-dark" to the
+                        "layout-wrapper" div which is the outmost container of the template. Similarly as the layout mode, using a helper bean like GuestPreferences, the choice can be
+                        left to the user as in the demo.</p>
+<pre>
+&lt;div class="layout-wrapper layout-menu-dark"&gt;
+...
+&lt;/div&gt;
+</pre>
+
+                    <b>TopBar Colors</b>
+                    <p>Roma provides 17 built-in color alternatives for the topbar, default is the light mode where adding a style class to the "layout-wrapper" element such as "layout-topbar-dark" enables the dark option.</p>
+<pre>
+&lt;div class="layout-wrapper layout-topbar-dark"&gt;
+...
+&lt;/div&gt;
+</pre>
+                    <p>The full list of alternative are;</p>
+                    <ul>
+                        <li>layout-topbar-light</li>
+                        <li>layout-topbar-dark</li>
+                        <li>layout-topbar-blue</li>
+                        <li>layout-topbar-bluegrey</li>
+                        <li>layout-topbar-cyan</li>
+                        <li>layout-topbar-deeporange</li>
+                        <li>layout-topbar-deeppurple</li>
+                        <li>layout-topbar-green</li>
+                        <li>layout-topbar-indigo</li>
+                        <li>layout-topbar-lime</li>
+                        <li>layout-topbar-magenta</li>
+                        <li>layout-topbar-orange</li>
+                        <li>layout-topbar-pink</li>
+                        <li>layout-topbar-purple</li>
+                        <li>layout-topbar-rose</li>
+                        <li>layout-topbar-teal</li>
+                    </ul>
+
+                    <h1>Icons</h1>
+                    <p>Roma Layout uses font awesome icons for layout so enable font awesome support in PrimeFaces by setting primefaces.FONT_AWESOME context parameter in web.xml as true.</p>
+<pre>
+&lt;context-param&gt;
+    &lt;param-name&gt;primefaces.FONT_AWESOME&lt;/param-name&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
+&lt;/context-param&gt;
+</pre>              
+
+                    <h1>Card</h1>
+                    <p>Card is a section to group content and layout provides a built-in css for it. Apply .card style class to your container to use it. If the
+                    card has a title defined with h1 tag, add card-w-title to adjust paddings.</p>
+<pre>
+&lt;div class="card"&gt;
+    Content here
+&lt;/div&gt;
+
+&lt;div class="card card-w-title"&gt;
+    &lt;h1&gt;Card with Title&lt;h1&gt;
+    Content here
+&lt;/div&gt;
+</pre>  
+
+                    <h1>Grid CSS</h1>
+                    <p>Roma uses new <a href="https://github.com/primefaces/primeflex">PrimeFlex</a> CSS throughout the samples however you may also use other Grid Utilities as well including the standard CSS Grid.</p>
+                    
+                    <h1>Tips</h1>
+                    <ul>
+                        <li>Familiarity with <a href="http://sass-lang.com/">SASS</a> is required to make customizations to the layout and theme.</li>
+                        <li>Demo application war and the maven project tag are included in distribution however you don't necessarily need them to install roma,
+                            the actual artifacts required are the layout zip file and the theme jar.</li>
+                    </ul>
+
+                    <h1>Migration Guide</h1>
+                    <p>For seamless updates use the <i>/sass/_layout_styles.scss</i> for overriding the layout styles and <i>/sass/_theme_styles.scss</i> for customizing the them styles instead
+                        of changing the scss files under layout and theme files to avoid maintenance issues. Updates usually require updating the layout and theme folders so 
+                        your changes won't get effected during updates since they are kept in external files.
+                    </p>
+                    
+                    <p>2.0.0 to 2.0.1</p>
+                    <ul>
+                        <li>Update layout.js, nanoscroller.js, nanoscroller.css and layout scss  files</li>
+                    </ul>
+                    
+                    <p>1.0.1 to 2.0.0</p>
+                    <ul>
+                        <li>Update RomaMenu*.java file</li>
+                        <li>Replace theme jar with new jar</li>
+                    </ul>
+                    
+                    <p>1.0.0 to 1.0.1</p>
+                    <ul>
+                        <li>Update layout.js, layout css and RomaMenu*.java files</li>
+                        <li>Replace theme jar with new jar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </ui:define>
+
+</ui:composition>
