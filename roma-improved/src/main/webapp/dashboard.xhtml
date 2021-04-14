@@ -8,6 +8,11 @@
         <h:outputScript name="chartjs/chart.js" library="demo" />
 
     </ui:define>
+    <style>
+             .hide { 
+                    display: none;
+                }
+    </style>
 
     <ui:define name="content">
         <h:form>
@@ -18,14 +23,32 @@
                             <p:graphicImage name="images/dashboard/logo-photo.png" library="roma-layout" />
                         </div>
 
-
-
                         <div class="p-col-12 p-lg-12">
-                            <p:inputText style="width: 100%; padding: 10px; border-radius: 20px;" placeholder="Search" value="#{jokebean.searchKey}"/>
+                            <p:selectOneRadio id="userType" value="#{jokebean.userType}" unselectable="true">
+                                <f:selectItem itemLabel="Regular" itemValue="regular"/>
+                                <f:selectItem itemLabel="Advanced" itemValue="advanced"/>
+                                <p:ajax event="change" update="search type"/>
+                            </p:selectOneRadio>
                         </div>
+
+                        <p:outputPanel id="search" styleClass="'p-col-12' #{(jokebean.userType == 'regular') ? 'p-lg-12': 'p-lg-8'}">
+                            <p:inputText style="width: 100%; padding: 10px; border-radius: 20px;" id="searchtext" placeholder="Search" value="#{jokebean.searchKey}"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel  id="type"  styleClass="#{(jokebean.userType == 'regular') ? 'hide': 'p-col-12 p-lg-4'}">
+                            <p:outputPanel  rendered="#{jokebean.userType == 'advanced'}">
+                                <p:selectOneMenu id="searchType" style="width: 100%; padding: 4px; border-radius: 20px; " value="#{jokebean.searchType}" >
+                                    <f:selectItems value="#{jokebean.jokeTypes}" var="type" itemLabel="#{type.key}" itemValue="#{type.value}"/>
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </p:outputPanel>
+
+
+
                         <div class="p-col-12 p-lg-3"></div>
                         <div class="p-col-12 p-lg-3">
-                            <p:commandButton style="width: 100%; border-radius: 20px;"  type="button" value="Clear"  styleClass="secondary-button" icon="fa fa-trash"/>
+                            <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" value="Clear"  action="#{jokebean.doClean()}" update="searchtext"
+                                             styleClass="secondary-button" icon="fa fa-trash"/>
                         </div>
                         <div class="p-col-12 p-lg-3">
                             <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" ajax="false"  

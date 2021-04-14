@@ -5,11 +5,13 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 
 import com.cityjokes.domain.Joke;
+import com.cityjokes.domain.JokeTypes;
 
 import com.cityjokes.clients.JokeClient;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.bean.SessionScoped;
 
 import javax.inject.Inject;
 import org.apache.log4j.Logger;
@@ -28,6 +30,8 @@ public class JokeBean implements Serializable {
     private JokeClient jokeClient;
 
     private String searchKey;
+    private String searchType;
+    private String userType = "regular";
     private String wholeJoke;
 
     private List<String> jokes;
@@ -42,6 +46,7 @@ public class JokeBean implements Serializable {
     public void init() {
         System.out.println("Start init");
         jokes = new ArrayList<>();
+        searchKey = "";
     }
 
     public List<String> doSearch() {
@@ -50,11 +55,15 @@ public class JokeBean implements Serializable {
 
         searchedJokes = jokeClient.getJokes(searchKey).getJokeList();
         for (Joke item : searchedJokes) {
-            wholeJoke = item.getSetup() +" "+ item.getPunchline();
+            wholeJoke = item.getSetup() + " " + item.getPunchline();
             jokes.add(wholeJoke);
         }
 
         return jokes;
+    }
+
+    public String doClean() {
+       return  searchKey = "";
     }
 
     public List<Joke> getSearchedJokes() {
@@ -79,6 +88,28 @@ public class JokeBean implements Serializable {
 
     public List<String> getJokes() {
         return jokes;
+    }
+
+    public String getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+    
+    
+    
+    public JokeTypes[] getJokeTypes(){
+        return JokeTypes.values();
     }
 
 }
