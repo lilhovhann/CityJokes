@@ -11,7 +11,6 @@ import com.cityjokes.clients.JokeClient;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.SessionScoped;
 
 import javax.inject.Inject;
 import org.apache.log4j.Logger;
@@ -58,9 +57,24 @@ public class JokeBean implements Serializable {
             wholeJoke = item.getSetup() + " " + item.getPunchline();
             jokes.add(wholeJoke);
         }
-
         return jokes;
     }
+    
+     public List<String> doAdvancedSearch() {
+        log.info("Start advanced search");
+        jokes = new ArrayList<>();
+
+        searchedJokes = jokeClient.getJokesByType(searchType, searchKey).getJokeList();
+        for (Joke item : searchedJokes) {
+            wholeJoke = item.getSetup() + " " + item.getPunchline();
+            jokes.add(wholeJoke);
+        }
+        return jokes;
+    }
+     
+     public List<String> search(){
+         return "regular".equals(userType) ? doSearch() : doAdvancedSearch();
+     }
 
     public String doClean() {
        return  searchKey = "";

@@ -31,11 +31,11 @@
                             </p:selectOneRadio>
                         </div>
 
-                        <p:outputPanel id="search" styleClass="'p-col-12' #{(jokebean.userType == 'regular') ? 'p-lg-12': 'p-lg-8'}">
+                        <p:outputPanel id="search" styleClass="'p-col-12' #{(jokebean.userType == 'regular') ? 'p-lg-12': 'p-lg-9'}">
                             <p:inputText style="width: 100%; padding: 10px; border-radius: 20px;" id="searchtext" placeholder="Search" value="#{jokebean.searchKey}"/>
                         </p:outputPanel>
 
-                        <p:outputPanel  id="type"  styleClass="#{(jokebean.userType == 'regular') ? 'hide': 'p-col-12 p-lg-4'}">
+                        <p:outputPanel  id="type"  styleClass="#{(jokebean.userType == 'regular') ? 'hide': 'p-col-12 p-lg-3'}">
                             <p:outputPanel  rendered="#{jokebean.userType == 'advanced'}">
                                 <p:selectOneMenu id="searchType" style="width: 100%; padding: 4px; border-radius: 20px; " value="#{jokebean.searchType}" >
                                     <f:selectItems value="#{jokebean.jokeTypes}" var="type" itemLabel="#{type.key}" itemValue="#{type.value}"/>
@@ -52,9 +52,10 @@
                         </div>
                         <div class="p-col-12 p-lg-3">
                             <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" ajax="false"  
-                                             value="Search" action="#{jokebean.doSearch()}" 
+                                             value="Search" action="#{jokebean.search()}" 
                                              icon="fa fa-search" update="textbox"/>
                         </div>
+                        
                         <div class="card p-col-12 p-lg-12" style=" margin-top: 5%; border: 2px solid #FAC403;">
                             <p:outputPanel id="textbox">  
 
