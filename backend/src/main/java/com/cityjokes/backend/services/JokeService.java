@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.json.JSONArray;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  *
@@ -47,8 +50,10 @@ public class JokeService {
         return Optional.ofNullable(savedJoke);
     }
 
+    @Bean
+    @Scheduled(fixedDelay = 8 * 1000, initialDelay = 1000)
     public Joke pullJokes() throws MalformedURLException, IOException {
-
+        log.info("pulling a joke");
         URL url = new URL("https://official-joke-api.appspot.com/jokes/random");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
