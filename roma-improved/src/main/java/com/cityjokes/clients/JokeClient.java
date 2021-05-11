@@ -38,12 +38,16 @@ public class JokeClient implements Serializable {
             request.addHeader("charset", "UTF-8");
             CloseableHttpResponse response = httpClient.execute(request);
             try ( CloseableHttpResponse httpResponse = httpClient.execute(request)) {
-                model = GsonConverter.fromJson(EntityUtils.toString(httpResponse.getEntity()), JokeApiResponse.class);
+                
+                if(httpResponse.getStatusLine().getStatusCode() == 200){
+                    model = GsonConverter.fromJson(EntityUtils.toString(httpResponse.getEntity()), JokeApiResponse.class);
+                }
+                
             }
             long elapsedTime = System.currentTimeMillis() - startTime;
 
-        } catch (IOException e) {
-
+        } catch (IOException e) {   
+            return new JokeApiResponse();
         }
         return model;
     }
