@@ -78,7 +78,8 @@ public class JokeController {
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public ResponseEntity<?> findByType(@RequestParam(required = true) String type, String input) {
+    public ResponseEntity<?> findByType(@RequestParam(name = "type") String type, 
+                                        @RequestParam(name = "input") String input) {
         List<Joke> foundJokes = jokeService.findByTypeAndKey(type, input);
         if (!foundJokes.isEmpty()) {
             log.info("Here");

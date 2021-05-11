@@ -9,9 +9,9 @@
 
     </ui:define>
     <style>
-             .hide { 
-                    display: none;
-                }
+        .hide { 
+            display: none;
+        }
     </style>
 
     <ui:define name="content">
@@ -23,13 +23,13 @@
                             <p:graphicImage name="images/dashboard/logo-photo.png" library="roma-layout" />
                         </div>
 
-                        <div class="p-col-12 p-lg-12">
-                            <p:selectOneRadio id="userType" value="#{jokebean.userType}" unselectable="true">
-                                <f:selectItem itemLabel="Regular" itemValue="regular"/>
-                                <f:selectItem itemLabel="Advanced" itemValue="advanced"/>
-                                <p:ajax event="change" update="search type"/>
-                            </p:selectOneRadio>
-                        </div>
+                        <!--                        <div class="p-col-12 p-lg-12">
+                                                    <p:selectOneRadio id="userType" value="#{jokebean.userType}" unselectable="true">
+                                                        <f:selectItem itemLabel="Regular" itemValue="regular"/>
+                                                        <f:selectItem itemLabel="Advanced" itemValue="advanced"/>
+                                                        <p:ajax event="change" update="search type regularSearch"/>
+                                                    </p:selectOneRadio>
+                                                </div>-->
 
                         <p:outputPanel id="search" styleClass="'p-col-12' #{(jokebean.userType == 'regular') ? 'p-lg-12': 'p-lg-9'}">
                             <p:inputText style="width: 100%; padding: 10px; border-radius: 20px;" id="searchtext" placeholder="Search" value="#{jokebean.searchKey}"/>
@@ -50,12 +50,27 @@
                             <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" value="Clear"  action="#{jokebean.doClean()}" update="searchtext"
                                              styleClass="secondary-button" icon="fa fa-trash"/>
                         </div>
-                        <div class="p-col-12 p-lg-3">
-                            <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" ajax="false"  
-                                             value="Search" action="#{jokebean.search()}" 
-                                             icon="fa fa-search" update="textbox"/>
-                        </div>
-                        
+                         <div class="p-col-12 p-lg-3">
+                        <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" ajax="false"  
+                                         value="Search" action="#{jokebean.search()}" 
+                                         icon="fa fa-search" update="textbox"/>
+                         </div>
+                        <p:outputPanel  id="regularSearch"  styleClass="#{(jokebean.userType == 'advanced') ? 'hide': 'p-col-12 p-lg-3'}">
+                            <p:outputPanel  rendered="#{jokebean.userType == 'regular'}">
+
+
+                            </p:outputPanel>
+                        </p:outputPanel>
+<!--                        <p:outputPanel  id="advancedSearch"  styleClass="#{(jokebean.userType == 'regular') ? 'hide': 'p-col-12 p-lg-3'}">
+                            <p:outputPanel  rendered="#{jokebean.userType == 'advanced'}">
+
+                                <p:commandButton style="width: 100%; border-radius: 20px;"  type="submit" ajax="false"  
+                                                 value="Advanced search" action="#{jokebean.search()}" 
+                                                 icon="fa fa-search" update="textbox"/>
+                            </p:outputPanel>
+                        </p:outputPanel>-->
+
+
                         <div class="card p-col-12 p-lg-12" style=" margin-top: 5%; border: 2px solid #FAC403;">
                             <p:outputPanel id="textbox">  
 
